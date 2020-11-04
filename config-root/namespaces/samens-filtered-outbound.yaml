@@ -1,0 +1,21 @@
+kind: NetworkPolicy
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: same-namespace-filtered-outbound
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - podSelector: {}
+    - namespaceSelector:
+        matchLabels:
+          bundle.gke.io/component-name: istio-ingress #To allow connection from istio ingress gateway in gke-system namespace in gke on-prem
+  egress:
+  - to:
+    - namespaceSelector: {}
+    - podSelector: {}
+    - ipBlock:
+        cidr: 172.16.0.4/32 #Replace with outbound target you want to allow communication to
